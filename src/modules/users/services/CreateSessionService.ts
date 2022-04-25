@@ -1,5 +1,5 @@
 import AppError from "@shared/errors/AppError";
-import { hash } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { getCustomRepository } from "typeorm";
 import User from "../typeorm/entities/User";
 import { UsersRepository } from "../typeorm/repositories/UsersRepository";
@@ -9,23 +9,25 @@ interface IRequest {
     password: string;
 }
 
+interface IResponse {
+    user: User;
+}
+
 class CreateSessionService {
 
     public async execute({ email, password }: IRequest): Promise<User> {
         const userRepository = getCustomRepository(UsersRepository);
-        const emailExists = await userRepository.findByEmail(email);
+        const user = await userRepository.findByEmail(email);
         
-        if (emailExists) {
-            throw new AppError("Email adress is already use!");
+        if (!user) {
+            throw new AppError("Incorrect email/password combination.", 401);
         }
 
-        const passwors_hash = await hash(password, 8);
+        const confirmedPassword = await compare(password, user.password);
 
-        const user = userRepository.create({
-            email,
-            password : passwors_hash,
-        });
-        await userRepository.save(user);
+        if (!confirmedPassword) {
+            throw new AppError("Incorrect email/password combination.", 401);
+        }
 
         return user;
     }
