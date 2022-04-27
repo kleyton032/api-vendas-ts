@@ -17,23 +17,23 @@ app.use(routes);
 app.use(errors());
 
 app.use(
-    (error: Error, request: Request, response: Response, next: NextFunction) => {
-      if (error instanceof AppError) {
-        return response.status(error.statusCode).json({
-          status: 'error',
-          message: error.message,
-        });
-      }
-  
-      console.log(error);
-  
-      return response.status(500).json({
+  (err: Error, request: Request, response: Response, next: NextFunction) => {
+    if (err instanceof AppError) {
+      return response.status(err.statusCode).json({
         status: 'error',
-        message: 'Internal server error',
+        message: err.message,
+        data: err?.data
       });
-    },
-  );
+    }
+    console.error(err);
+
+    return response.status(500).json({
+      status: 'error',
+      message: 'Internal server error'
+    });
+  },
+);
 
 app.listen(3333, () => {
-    console.log('Server started on port 3333!');
+  console.log('Server started on port 3333!');
 })
