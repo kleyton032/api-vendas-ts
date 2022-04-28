@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import express, { NextFunction, Request, Response } from 'express';
+import 'express-async-errors';
 import cors from 'cors';
 import routes from './routes/index';
 import { errors } from 'celebrate';
-import 'express-async-errors';
 import AppError from '@shared/errors/AppError';
 import '@shared/typeorm';
 
@@ -25,6 +25,7 @@ app.use(
         data: err?.data
       });
     }
+    
     console.error(err);
 
     return response.status(500).json({

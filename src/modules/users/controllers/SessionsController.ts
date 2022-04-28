@@ -5,7 +5,6 @@ export default class SessionsController {
 
     public async create(request: Request, reponse: Response): Promise<Response> {
 
-            
             const { email, password } = request.body;
 
             const creationSession = new CreateSessionService();
