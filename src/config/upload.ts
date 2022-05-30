@@ -5,15 +5,15 @@ import crypto from 'crypto'
 const uploadFolder = path.resolve(__dirname, '..', '..', 'uploads');
 
 export default {
-    directoty: uploadFolder,
-    storege: multer.diskStorage({
-        destination: uploadFolder,
-        filename(request, file, callback) {
-            const fileHash = crypto.randomBytes(10).toString('hex');
+  directory: uploadFolder,
+  storage: multer.diskStorage({
+    destination: uploadFolder,
+    filename(request, file, callback) {
+      const fileHash = crypto.randomBytes(10).toString('hex');
 
-            const fileName = `${fileHash}-${file.originalname}`;
+      const filename = `${fileHash}-${file.originalname}`;
 
-            callback(null, fileName);
-        }
-    })
-}
+      callback(null, filename);
+    },
+  }),
+};
